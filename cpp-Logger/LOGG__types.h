@@ -5,16 +5,14 @@
  *      Author: mvstinger
  */
 
-#ifndef LOGG_TYPES_H_
-#define LOGG_TYPES_H_
+#ifndef LOGG__TYPES_H_
+#define LOGG__TYPES_H_
+
+
 
 #include <fstream>
 //#include <cstdio>
 #include <string>
-
-
-
-namespace Logger {
 
 
 
@@ -23,11 +21,12 @@ using std::ostream;
 using std::ofstream;
 
 
-class LoggerInterface;
-class LoggerBase;
-class NullLogger;
-class ConsoleLogger;
-class FileLogger;
+
+namespace Logger {
+
+
+
+//TODO: Add error enum
 
 
 
@@ -39,8 +38,6 @@ enum LogLevel {
 	LOG_INFO = 30,
 	LOG_DEBUG = 20
 };
-
-LogLevel LOGG__DEFAULT_LOG_LEVEL = LOG_DEBUG;
 
 
 
@@ -106,16 +103,16 @@ public:
 
 
 
-class ConsoleLogger : LoggerBase {
+class ConsoleLogger : public LoggerBase {
 public:
 	ConsoleLogger(void);
-	ConsoleLogger(LogLevel);
+	ConsoleLogger(const LogLevel);
 	~ConsoleLogger(void);
 };
 
 
 
-class FileLogger : LoggerBase {
+class FileLogger : public LoggerBase {
 public:
 	FileLogger(const string);
 	FileLogger(const LogLevel, const string);
@@ -133,4 +130,4 @@ private:
 
 
 
-#endif /* LOGG_TYPES_H_ */
+#endif /* LOGG__TYPES_H_ */

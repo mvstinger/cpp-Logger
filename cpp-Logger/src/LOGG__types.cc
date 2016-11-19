@@ -1,5 +1,5 @@
 /*
- * LOGG_types.cc
+ * LOGG__types.cc
  *
  *  Created on: Nov 13, 2016
  *      Author: mvstinger
@@ -7,8 +7,7 @@
 
 
 
-
-#include "../LOGG_types.h"
+#include "../LOGG__types.h"
 
 
 
@@ -16,14 +15,23 @@ namespace Logger {
 
 
 
-LoggerInterface::LoggerInterface(void) {};
+LogLevel LOGG__DEFAULT_LOG_LEVEL = LOG_DEBUG;
+
+
+
+LoggerInterface::LoggerInterface(void) :
+		ostream_ptr_(NULL),
+		log_level_(LOGG__DEFAULT_LOG_LEVEL) {};
 
 LoggerInterface::LoggerInterface(const LogLevel lvl) :
+		ostream_ptr_(NULL),
 		log_level_(lvl) {};
 
 LoggerInterface::LoggerInterface(const LogLevel lvl, ostream* ptr) :
 		ostream_ptr_(ptr),
 		log_level_(lvl) {};
+
+LoggerInterface::~LoggerInterface(void) {};
 
 
 
@@ -34,6 +42,8 @@ LoggerBase::LoggerBase(const LogLevel lvl) :
 
 LoggerBase::LoggerBase(const LogLevel lvl, ostream* ptr) :
 		LoggerInterface(lvl, ptr) {};
+
+LoggerBase::~LoggerBase(void) {};
 
 int LoggerBase::critical(const string msg) const {
 	int error_state = 0;
