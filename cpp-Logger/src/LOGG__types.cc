@@ -31,7 +31,7 @@ LoggerInterface::LoggerInterface(const LogLevel lvl, ostream* ptr) :
 		ostream_ptr_(ptr),
 		log_level_(lvl) {};
 
-LoggerInterface::~LoggerInterface(void) {};
+//LoggerInterface::~LoggerInterface(void) {};
 
 
 
@@ -43,7 +43,7 @@ LoggerBase::LoggerBase(const LogLevel lvl) :
 LoggerBase::LoggerBase(const LogLevel lvl, ostream* ptr) :
 		LoggerInterface(lvl, ptr) {};
 
-LoggerBase::~LoggerBase(void) {};
+//LoggerBase::~LoggerBase(void) {};
 
 int LoggerBase::critical(const string msg) const {
 	int error_state = 0;

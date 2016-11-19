@@ -59,8 +59,8 @@ public:
 	virtual int info(const string) const = 0;
 	virtual int debug(const string) const = 0;
 
-	virtual LogLevel get_level(void) const;
-	virtual int set_level(const LogLevel);
+	virtual LogLevel get_level(void) const = 0;
+	virtual int set_level(const LogLevel) = 0;
 
 protected:
 	ostream* ostream_ptr_;
