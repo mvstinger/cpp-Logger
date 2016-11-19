@@ -7,7 +7,16 @@
 
 
 
+#include <iostream>
+#include <fstream>
+#include <ctime>
 #include "../LOGG__types.h"
+
+
+
+using std::cout;
+using std::ostream;
+using std::ofstream;
 
 
 
@@ -15,23 +24,23 @@ namespace Logger {
 
 
 
-LogLevel LOGG__DEFAULT_LOG_LEVEL = LOG_DEBUG;
+LogLevel LOGG__DEFAULT_LOG_LEVEL = LOG_WARNING;
 
 
 
 LoggerInterface::LoggerInterface(void) :
-		ostream_ptr_(NULL),
+		stream_ptr_(NULL),
 		log_level_(LOGG__DEFAULT_LOG_LEVEL) {};
 
 LoggerInterface::LoggerInterface(const LogLevel lvl) :
-		ostream_ptr_(NULL),
+		stream_ptr_(NULL),
 		log_level_(lvl) {};
 
 LoggerInterface::LoggerInterface(const LogLevel lvl, ostream* ptr) :
-		ostream_ptr_(ptr),
+		stream_ptr_(ptr),
 		log_level_(lvl) {};
 
-//LoggerInterface::~LoggerInterface(void) {};
+LoggerInterface::~LoggerInterface(void) {};
 
 
 
@@ -43,7 +52,7 @@ LoggerBase::LoggerBase(const LogLevel lvl) :
 LoggerBase::LoggerBase(const LogLevel lvl, ostream* ptr) :
 		LoggerInterface(lvl, ptr) {};
 
-//LoggerBase::~LoggerBase(void) {};
+LoggerBase::~LoggerBase(void) {};
 
 int LoggerBase::critical(const string msg) const {
 	int error_state = 0;
@@ -85,10 +94,12 @@ int LoggerBase::set_level(const LogLevel lvl) {
 	return error_state;
 }
 
+ostream* LoggerBase::get_stream_ptr(void) const {	return this->stream_ptr_; }
+
 int LoggerBase::log_(const LogLevel lvl, const string msg) const {
 	int error_state = 0;
 	if(lvl >= this->log_level_) {
-		 *(this->ostream_ptr_) << now_string() << "\t" << to_string(lvl) << "\t" << msg << std::endl;
+		*(this->stream_ptr_) << now_string() << "\t" << to_string(lvl) << "\t" << msg << std::endl;
 	}
 	return error_state;
 }
@@ -96,6 +107,9 @@ int LoggerBase::log_(const LogLevel lvl, const string msg) const {
 
 
 NullLogger::NullLogger(void) :
+		LoggerBase(LOG_SILENT) {};
+
+NullLogger::NullLogger(const NullLogger& that) :
 		LoggerBase(LOG_SILENT) {};
 
 NullLogger::~NullLogger(void) {};
@@ -106,36 +120,48 @@ int NullLogger::set_level(const LogLevel irrelevant) { return 1; }
 
 
 ConsoleLogger::ConsoleLogger(void) :
-		LoggerBase(LOGG__DEFAULT_LOG_LEVEL, (ostream*)stdout) {};
+		LoggerBase(LOGG__DEFAULT_LOG_LEVEL, &cout) {};
+
+ConsoleLogger::ConsoleLogger(const ConsoleLogger& that) :
+		LoggerBase(that.get_level(), &cout) {};
 
 ConsoleLogger::ConsoleLogger(const LogLevel lvl) :
-		LoggerBase(lvl, (ostream*)stdout) {};
+		LoggerBase(lvl, &cout) {};
 
 ConsoleLogger::~ConsoleLogger(void) {};
 
 
 
 FileLogger::FileLogger(const string filepath) {
-	this->ostream_target_ = ofstream(filepath.c_str());
+	this->stream_target_ = ofstream(filepath.c_str());
 	this->log_level_ = LOGG__DEFAULT_LOG_LEVEL;
-	this->ostream_ptr_ = &(this->ostream_target_);
+	this->stream_ptr_ = &(this->stream_target_);
 }
 
 FileLogger::FileLogger(const LogLevel lvl, const string filepath) {
-	this->ostream_target_ = ofstream(filepath.c_str());
+	this->stream_target_ = ofstream(filepath.c_str(), std::ofstream::app);
 	this->log_level_ = lvl;
-	this->ostream_ptr_ = &(this->ostream_target_);
+	this->stream_ptr_ = &(this->stream_target_);
 }
 
 FileLogger::~FileLogger(void) {
-	this->ostream_ptr_ = NULL;
-	this->ostream_target_.close();
+	this->stream_ptr_ = NULL;
+	this->stream_target_.close();
 }
 
 
 
 string now_string(void) {
-	return string("YYYYmmdd_HHMMSS");
+	time_t rawtime;
+	struct tm * timeinfo;
+	char buffer[30];
+
+	time (&rawtime);
+	timeinfo = localtime(&rawtime);
+
+	strftime(buffer,30,"%Y%m%d_%H%M%S",timeinfo);
+	std::string str(buffer);
+	return str;
 }
 
 

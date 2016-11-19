@@ -10,8 +10,8 @@
 
 
 
-#include <fstream>
-//#include <cstdio>
+#include <iostream>
+#include <ostream>
 #include <string>
 
 
@@ -62,8 +62,10 @@ public:
 	virtual LogLevel get_level(void) const = 0;
 	virtual int set_level(const LogLevel) = 0;
 
+	virtual ostream* get_stream_ptr(void) const = 0;
+
 protected:
-	ostream* ostream_ptr_;
+	ostream* stream_ptr_;
 	LogLevel log_level_;
 
 	virtual int log_(const LogLevel, const string) const = 0;
@@ -87,6 +89,8 @@ public:
 	LogLevel get_level(void) const;
 	int set_level(const LogLevel);
 
+	ostream* get_stream_ptr(void) const;
+
 protected:
 	int log_(const LogLevel, const string) const;
 };
@@ -96,6 +100,7 @@ protected:
 class NullLogger : public LoggerBase {
 public:
 	NullLogger(void);
+	NullLogger(const NullLogger&);
 	~NullLogger(void);
 
 	int set_level(const LogLevel);
@@ -106,6 +111,7 @@ public:
 class ConsoleLogger : public LoggerBase {
 public:
 	ConsoleLogger(void);
+	ConsoleLogger(const ConsoleLogger&);
 	ConsoleLogger(const LogLevel);
 	~ConsoleLogger(void);
 };
@@ -119,7 +125,7 @@ public:
 	~FileLogger(void);
 
 private:
-	ofstream ostream_target_;
+	ofstream stream_target_;
 };
 
 
