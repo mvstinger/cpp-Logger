@@ -54,32 +54,32 @@ LoggerBase::LoggerBase(const LogLevel lvl, ostream* ptr) :
 
 LoggerBase::~LoggerBase(void) {};
 
-int LoggerBase::critical(const string msg) const {
-	int error_state = 0;
+LogError LoggerBase::critical(const string msg) const {
+	LogError error_state = NO_ERROR;
 	this->log_(LOG_CRITICAL, msg);
 	return error_state;
 }
 
-int LoggerBase::error(const string msg) const {
-	int error_state = 0;
+LogError LoggerBase::error(const string msg) const {
+	LogError error_state = NO_ERROR;
 	this->log_(LOG_ERROR, msg);
 	return error_state;
 }
 
-int LoggerBase::warning(const string msg) const {
-	int error_state = 0;
+LogError LoggerBase::warning(const string msg) const {
+	LogError error_state = NO_ERROR;
 	this->log_(LOG_WARNING, msg);
 	return error_state;
 }
 
-int LoggerBase::info(const string msg) const {
-	int error_state = 0;
+LogError LoggerBase::info(const string msg) const {
+	LogError error_state = NO_ERROR;
 	this->log_(LOG_INFO, msg);
 	return error_state;
 }
 
-int LoggerBase::debug(const string msg) const {
-	int error_state = 0;
+LogError LoggerBase::debug(const string msg) const {
+	LogError error_state = NO_ERROR;
 	this->log_(LOG_DEBUG, msg);
 	return error_state;
 }
@@ -88,16 +88,16 @@ LogLevel LoggerBase::get_level(void) const {
 	return this->log_level_;
 }
 
-int LoggerBase::set_level(const LogLevel lvl) {
-	int error_state = 0;
+LogError LoggerBase::set_level(const LogLevel lvl) {
+	LogError error_state = NO_ERROR;
 	this->log_level_ = lvl;
 	return error_state;
 }
 
 ostream* LoggerBase::get_stream_ptr(void) const {	return this->stream_ptr_; }
 
-int LoggerBase::log_(const LogLevel lvl, const string msg) const {
-	int error_state = 0;
+LogError LoggerBase::log_(const LogLevel lvl, const string msg) const {
+	LogError error_state = NO_ERROR;
 	if(lvl >= this->log_level_) {
 		*(this->stream_ptr_) << now_string() << "\t" << to_string(lvl) << "\t" << msg << std::endl;
 	}
@@ -115,7 +115,7 @@ NullLogger::NullLogger(const NullLogger& that) :
 NullLogger::~NullLogger(void) {};
 
 //	Do not allow change of log level (this hides parent class method)
-int NullLogger::set_level(const LogLevel irrelevant) { return 1; }
+LogError NullLogger::set_level(const LogLevel irrelevant) { return CANNOT_SET_LOG_LEVEL; }
 
 
 

@@ -26,7 +26,11 @@ namespace Logger {
 
 
 
-//TODO: Add error enum
+enum LogError {
+	NO_ERROR = 0,
+	UNK_ERROR = 1,
+	CANNOT_SET_LOG_LEVEL = 2
+};
 
 
 
@@ -53,14 +57,14 @@ public:
 	LoggerInterface(const LogLevel, ostream*);
 	virtual ~LoggerInterface(void) = 0;
 
-	virtual int critical(const string) const = 0;
-	virtual int error(const string) const = 0;
-	virtual int warning(const string) const = 0;
-	virtual int info(const string) const = 0;
-	virtual int debug(const string) const = 0;
+	virtual LogError critical(const string) const = 0;
+	virtual LogError error(const string) const = 0;
+	virtual LogError warning(const string) const = 0;
+	virtual LogError info(const string) const = 0;
+	virtual LogError debug(const string) const = 0;
 
 	virtual LogLevel get_level(void) const = 0;
-	virtual int set_level(const LogLevel) = 0;
+	virtual LogError set_level(const LogLevel) = 0;
 
 	virtual ostream* get_stream_ptr(void) const = 0;
 
@@ -68,7 +72,7 @@ protected:
 	ostream* stream_ptr_;
 	LogLevel log_level_;
 
-	virtual int log_(const LogLevel, const string) const = 0;
+	virtual LogError log_(const LogLevel, const string) const = 0;
 };
 
 
@@ -80,19 +84,19 @@ public:
 	LoggerBase(const LogLevel, ostream*);
 	virtual ~LoggerBase(void) = 0;
 
-	int critical(const string) const;
-	int error(const string) const;
-	int warning(const string) const;
-	int info(const string) const;
-	int debug(const string) const;
+	LogError critical(const string) const;
+	LogError error(const string) const;
+	LogError warning(const string) const;
+	LogError info(const string) const;
+	LogError debug(const string) const;
 
 	LogLevel get_level(void) const;
-	int set_level(const LogLevel);
+	LogError set_level(const LogLevel);
 
 	ostream* get_stream_ptr(void) const;
 
 protected:
-	int log_(const LogLevel, const string) const;
+	LogError log_(const LogLevel, const string) const;
 };
 
 
@@ -103,7 +107,7 @@ public:
 	NullLogger(const NullLogger&);
 	~NullLogger(void);
 
-	int set_level(const LogLevel);
+	LogError set_level(const LogLevel);
 };
 
 
