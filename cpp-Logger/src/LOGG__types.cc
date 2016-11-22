@@ -8,6 +8,7 @@
 
 
 #include <iostream>
+#include <ostream>
 #include <fstream>
 #include <ctime>
 #include "../LOGG__types.h"
